@@ -1,3 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 13 22:35:32 2017
+
+@author: magg5201
+For COMP 5703 - Capstone project 
+Unsupervised learning with Gan for LF data
+
+This is the Util module
+helps in itial extraction of LF image & plotiing of final result 
+"""
+
+#imported libraries
 import numpy as np
 import scipy.misc
 import tensorflow as tf
@@ -8,24 +21,19 @@ from scipy.ndimage import rotate
 
 FLAGS = tf.app.flags.FLAGS
 
+#Function used for expoting samples at checkpoint to disk
 def grid_plot(images, size, path):
-    #images = (images + 1.0) / 2.0
-
     h, w = FLAGS.output_image_height, FLAGS.output_image_width
-    
     image_grid = np.zeros((h * size[0], w * size[1], 3))
     for idx, image in enumerate(images):
         i = idx % size[1]
         j = int(idx / size[1])
         image_grid[int(j * h):int(j * h + h), int(i * w):int(i * w + w), :] = image
-
     scipy.misc.imsave(path, image_grid)
 
+#Function used for Converting 1 LF image to subviwes
+#This needs to be Rethreaded
 def ont_to_64(path,img_path,dim,cut_x,cut_y,test_path):
-   #dim= dim
-   #cut_x = cut_x
-   #cut_y = cut_y
-   #print(str(path))
    for filename in glob.glob(path+'/*.png'):
        print(str(path))
        img_2D = cv2.imread(filename)
@@ -40,15 +48,9 @@ def ont_to_64(path,img_path,dim,cut_x,cut_y,test_path):
            for j in range(dim[1]):
                img = img_2D[i::dim[0],j::dim[1],  0:3]
                fullInput[i,j,:,:,:] = img[:h, :w]
-               #print()
-       #fullInput = fullInput[4:12, 4:12,:,:,:]
-       
        fullInput = fullInput[(0+cut_x):(dim[0]-cut_x),\
                              (0+ cut_y):(dim[1] - cut_y),:,:,:]
-       #print((fullInput.shape))
-       
        fullInput = np.reshape(fullInput, [((dim[0]-(2*cut_x))*(dim[1]-(2*cut_y))),h,w,3])
-       
        save_img = np.zeros((h,w,c))
        total = 0
        for img_no in range(fullInput.shape[0]):
