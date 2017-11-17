@@ -1,5 +1,14 @@
-""" Routine for decoding TFRecords file format """
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 13 22:35:32 2017
 
+@author: magg5201
+For COMP 5703 - Capstone project 
+Unsupervised learning with Gan for LF data
+
+Routine for decoding TFRecords file format
+"""
+#Importing Libraries
 import tensorflow as tf
 import numpy as np
 from config import config

@@ -163,7 +163,8 @@ def train():
     coord.request_stop()
     coord.join(threads)
     summary_writer.close()
-    
+
+#The main function creating and deleting directories
 def main(argv=None):
 
     if (FLAGS.restore_model == "True"):
