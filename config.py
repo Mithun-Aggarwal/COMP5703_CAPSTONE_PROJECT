@@ -2,13 +2,20 @@
 """
 Created on Fri Oct 13 22:35:32 2017
 
-@author: ksxl806
+@author: magg5201
+For COMP 5703 - Capstone project 
+Unsupervised learning with Gan for LF data
+
+This is the main Config file.
+Flags are also prefilled in this file only.
 """
 
+#imported libraries
 from easydict import EasyDict as edict
 import tensorflow as tf
 
 
+#All the edicts pipeline
 config = edict()
 config.PRE_TRAIN = edict()
 config.TRAIN = edict()
@@ -19,39 +26,42 @@ config.ORIGNAL = edict()
 config.GENERATOR = edict()
 config.SETTINGS = edict()
 
+## PRE_TRAINING
+#Examples in each lf_file
+config.PRE_TRAIN.shards = 1
+config.PRE_TRAIN.threads = 1
+config.PRE_TRAIN.file_name_shuffling = 'False'
+config.PRE_TRAIN.import_colorspace = 'RGB'
+config.PRE_TRAIN.import_channels = 3
+config.PRE_TRAIN.import_image_format = "png"
+config.PRE_TRAIN.import_filename_pattern = 'LF-*'
+
+#input LF image size
 # Data Config 375, 541
 config.ORIGNAL.BIG_IMG_H_PATCH = 5250
 config.ORIGNAL.BIG_IMG_W_PATCH = 7574
 config.ORIGNAL.BIG_IMG_C_PATCH = 3
-#config.ORIGNAL.IMG_PATCH = config.IMG_H_PATCH * config.IMG_W_PATCH
-
+# Window options
 config.ORIGNAL.CUT_DIM_X = 14
 config.ORIGNAL.CUT_DIM_Y = 14
+#Window image extraction
 config.ORIGNAL.CUT_X = 4
 config.ORIGNAL.CUT_Y = 2
 
-# =============================================================================
-# config.ORIGNAL.CUT_DIM_X = 16
-# config.ORIGNAL.CUT_DIM_Y = 16
-# config.ORIGNAL.CUT_X = 4
-# config.ORIGNAL.CUT_Y = 4
-# =============================================================================
-
-
-#open 1 to 64 and close training 
+#The main configurtion responsible for controling the flow
 config.SETTINGS.agumentation_rotate = "False"
 config.SETTINGS.imgprocessing_status = "True"
 config.SETTINGS.TF_LF_creation = "True"
 config.SETTINGS.Train_status = "True"
 config.SETTINGS.restore_model = "False"
 
+#The orignal size of the subview
 #DCGAN-INPORT
 config.DCGAN.input_image_height = 375
 config.DCGAN.input_image_width = 541
-#config.DCGAN.input_image_height = 256
-#config.DCGAN.input_image_width = 256
 config.DCGAN.input_image_channel = 3
 
+#the size of images feeded and extracted from the network
 config.DCGAN.output_image_height = 32
 config.DCGAN.output_image_width = 32
 config.DCGAN.output_image_channel = 3
@@ -59,7 +69,6 @@ config.DCGAN.output_image_channel = 3
 #DGGAN-Generator
 config.GENERATOR.D_H_PATCH = 10  
 config.GENERATOR.D_W_PATCH = 10
-#50 * 50 
 config.GENERATOR.D_PATCH = 100
 config.GENERATOR.D_C_PATCH = 1
 
@@ -89,26 +98,9 @@ config.TRAIN.model_save_step = 10
 config.TRAIN.Samples_number = 4
 config.TRAIN.Samples_Grid_X = 2
 config.TRAIN.Samples_Grid_Y = 2
-#config.TRAIN.decay_every = 1000
 config.TRAIN.lr_gen = 0.002
 config.TRAIN.lr_dis = 0.0002
 config.TRAIN.beta1 = 0.5
-
-## PRE_TRAINING
-#Examples in each lf_file
-#Henry change it to no of (images 474 * 64
-#config.PRE_TRAIN.shards = 474 * 64
-#config.PRE_TRAIN.threads = 64
-config.PRE_TRAIN.shards = 1
-config.PRE_TRAIN.threads = 1
-
-config.PRE_TRAIN.file_name_shuffling = 'False'
-
-config.PRE_TRAIN.import_colorspace = 'RGB'
-config.PRE_TRAIN.import_channels = 3
-config.PRE_TRAIN.import_image_format = "png"
-
-config.PRE_TRAIN.import_filename_pattern = 'LF-*'
 
 #Directories
 #windows
@@ -153,9 +145,7 @@ tf.app.flags.DEFINE_integer('CUT_DIM_X', config.ORIGNAL.CUT_DIM_X, 'CUT_DIM_X')
 tf.app.flags.DEFINE_integer('CUT_DIM_Y', config.ORIGNAL.CUT_DIM_Y, 'CUT_DIM_Y')
 tf.app.flags.DEFINE_integer('CUT_X', config.ORIGNAL.CUT_X, 'CUT_X')
 tf.app.flags.DEFINE_integer('CUT_Y', config.ORIGNAL.CUT_Y, 'CUT_Y')
-
 tf.app.flags.DEFINE_string('test_path', config.TEST.directory, 'test_path')
-
 tf.app.flags.DEFINE_integer('input_image_height', config.DCGAN.input_image_height, 'input image height')
 tf.app.flags.DEFINE_integer('input_image_width', config.DCGAN.input_image_width, 'input image width')
 tf.app.flags.DEFINE_integer('input_image_channel', config.DCGAN.input_image_channel, 'input image channel')
@@ -174,7 +164,6 @@ tf.app.flags.DEFINE_string('imgprocessing_status', config.SETTINGS.imgprocessing
 tf.app.flags.DEFINE_string('Train_status', config.SETTINGS.Train_status, 'Train_status')
 tf.app.flags.DEFINE_string('TF_LF_creation', config.SETTINGS.TF_LF_creation, 'TF_LF_creation')
 tf.app.flags.DEFINE_string('agumentation_rotate', config.SETTINGS.agumentation_rotate, 'agumentation_rotate')
-
 tf.app.flags.DEFINE_integer('batch_size', config.TRAIN.batch_size, 'batch size')
 tf.app.flags.DEFINE_integer('ephoo_size', config.TRAIN.ephoo_size, 'ephoo size')
 tf.app.flags.DEFINE_integer('extra_Training_discriminator', config.TRAIN.extra_Training_discriminator, 'extra Training discriminator')
