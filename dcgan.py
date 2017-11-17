@@ -1,15 +1,24 @@
-import os
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 13 22:35:32 2017
+
+@author: magg5201
+For COMP 5703 - Capstone project 
+Unsupervised learning with Gan for LF data
+
+The main model file that defines the network and its components
+"""
+
+#imported libraries
 from config import config
 import tensorflow as tf
 import numpy as np
-
 import ops
-
 from tfrecords_reader import TFRecordsReader
 
 FLAGS = tf.app.flags.FLAGS
 
-
+#The final inference model 
 def inference(images, z):
     generated_images = generator(z)
     
@@ -19,7 +28,7 @@ def inference(images, z):
 
     return D_logits_real, D_logits_fake, generated_images
 
-
+#The fuction defining all the losses
 def loss(D_logits_real, D_logits_fake):
     d_loss_real = tf.reduce_mean(
         tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logits_real,
@@ -34,7 +43,7 @@ def loss(D_logits_real, D_logits_fake):
 
     return d_loss, g_loss, d_loss_real , d_loss_fake
 
-
+#the function defining the training
 def train(d_loss, g_loss):
     # variables for discriminator
     d_vars = tf.get_collection(
@@ -54,7 +63,7 @@ def train(d_loss, g_loss):
     
     return train_d_op, train_g_op
 
-
+#The function defining the discriminator
 def discriminator(images, reuse=False):
     with tf.variable_scope("discriminator") as scope:
         if reuse:
@@ -107,7 +116,7 @@ def discriminator(images, reuse=False):
 
         return fc
 
-
+#The function defining the genrator
 def generator(z):
     with tf.variable_scope("generator") as scope:
 
@@ -164,7 +173,7 @@ def generator(z):
 
     return h4
 
-
+#the function intracting with TFRecord later and provinf batched output according to the model
 def inputs(batch_size=FLAGS.batch_size):
     crop_height, crop_width = FLAGS.input_image_height, FLAGS.input_image_width
 
@@ -192,6 +201,7 @@ def inputs(batch_size=FLAGS.batch_size):
 
     return float_images,label
 
+#The Function to add the filters on tensorboard 
 def addfilterstensorboard(filters=5):
     with tf.variable_scope('discriminator/conv1', reuse=True):
         Kernal = tf.get_variable("w")
@@ -201,24 +211,5 @@ def addfilterstensorboard(filters=5):
     with tf.variable_scope('generator/conv_tranpose4', reuse=True):
         Kernal2 = tf.get_variable("w")
         grid2 = ops.put_kernels_on_grid (Kernal2,1)
-        #filters = tf.Variable(tf.truncated_normal(grid.shape))
         tf.summary.image(name ='conv_tranpose4',tensor =grid2,max_outputs=1, collections=["Generated_filters"])
-# =============================================================================
-#     with tf.variable_scope('discriminator/conv2', reuse=True):
-#         Kernal = tf.get_variable("w")
-#         grid = ops.put_kernels_on_grid (Kernal,2)
-#         with tf.name_scope("Conv_filter_2"):
-#             tf.summary.image(name = 'Conv_filter_2',tensor = grid,max_outputs=1, collections=["Test"])
-# =============================================================================
-# =============================================================================
-#     with tf.variable_scope('discriminator/conv3', reuse=True):
-#         Kernal = tf.get_variable("w")
-#         grid = ops.put_kernels_on_grid (Kernal)
-#         #filters = tf.Variable(tf.truncated_normal(grid.shape))
-#         tf.summary.image('Conv_filter_3',grid,1, collections=["Test"])
-#     with tf.variable_scope('discriminator/conv4', reuse=True):
-#         Kernal = tf.get_variable("w")
-#         grid = ops.put_kernels_on_grid (Kernal)
-#         #filters = tf.Variable(tf.truncated_normal(grid.shape))
-#         tf.summary.image('Conv_filter_4',grid,1, collections=["Test"])
-# =============================================================================
+

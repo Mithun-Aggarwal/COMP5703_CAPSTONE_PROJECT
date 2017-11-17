@@ -1,7 +1,16 @@
-#This is the OPS file responsible to presetiing the layers required in any network
-#Author - magg5201
-#Created for Capstone Project COMP 5703
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 13 22:35:32 2017
 
+@author: magg5201
+For COMP 5703 - Capstone project 
+Unsupervised learning with Gan for LF data
+
+This is the Ops module
+This is used to configure hyper-parameters for layers of Neural network.
+"""
+
+#imported libraries
 import tensorflow as tf
 FLAGS = tf.app.flags.FLAGS
 
@@ -25,7 +34,8 @@ def conv_2d(x, num_filters,
         conv = tf.nn.bias_add(conv, biases)                   
         return conv
 
-
+#The changed conv2d_transpose
+#The parameters can be change from both FLAG and Config
 def conv2d_transpose(x,
                      output_shape,
                      kernel_size=5,
@@ -49,7 +59,8 @@ def conv2d_transpose(x,
 
         return conv_transpose
 
-
+#The changed fc
+#The parameters can be change from both FLAG and Config
 def fc(x, num_outputs, scope="fc"):
 
     with tf.variable_scope(scope):
@@ -64,7 +75,8 @@ def fc(x, num_outputs, scope="fc"):
 
         return output
 
-
+#The changed batch_norm
+#The parameters can be change from both FLAG and Config
 def batch_norm(x,
                decay=0.9,
                epsilon=1e-5,
@@ -84,13 +96,15 @@ def batch_norm(x,
         scope=scope)
     return bn
 
-
+#The changed Leaky_relu
+#The parameters can be change from both FLAG and Config
 def leaky_relu(x, leak=0.2):
     return tf.maximum(x, leak * x)
 
 
 from math import sqrt
 
+#The function responsible for extracting the filers out of ANN layers
 def put_kernels_on_grid (kernel, pad = 1):
 
   '''Visualize conv. filters as an image (mostly for the 1st layer).
