@@ -1,5 +1,14 @@
-"""Converts LF images to TFRecords file format with Example protos."""
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 13 22:35:32 2017
 
+@author: magg5201
+For COMP 5703 - Capstone project 
+Unsupervised learning with Gan for LF data
+
+Converts LF images to TFRecords file format with Example protos.
+"""
+#Import Libaries
 from datetime import datetime
 import os
 import sys
@@ -10,8 +19,8 @@ import tensorflow as tf
 import numpy as np
 import re
 
-
 FLAGS = tf.app.flags.FLAGS
+
 
 def _int64_feature(value):
     """Wrapper for inserting int64 features into Example proto."""
@@ -28,10 +37,6 @@ def _bytes_feature(value):
 def _convert_to_example(filename,label, image_buffer, height, width):
     """Build an Example proto for an example.
   """
-# =============================================================================
-#     if (filename == "Subview_1"):
-#         print("Subview_1")
-# =============================================================================
     example = tf.train.Example(features=tf.train.Features(feature={
         'height': _int64_feature(height),
         'width': _int64_feature(width),
@@ -41,14 +46,13 @@ def _convert_to_example(filename,label, image_buffer, height, width):
         'image_raw': _bytes_feature(tf.compat.as_bytes(image_buffer))
     }))
     return example
-    
+
+
 class ImageCoder(object):
     """Helper class that provides TensorFlow image coding utilities."""
 
     def __init__(self):
-        # Create a single Session to run all image coding calls.
         self._sess = tf.Session()
-
         if (FLAGS.import_image_format == "png"):
             self._decode_png_data = tf.placeholder(dtype=tf.string)
             self._decode_png = tf.image.decode_png(
@@ -82,11 +86,7 @@ def _process_image(filename, coder):
         image_data = f.read()
 
     regex = re.compile(r'\d+')
-    #img_num  = int(regex.findall(filename)[0])
     img_sub_num =  int(regex.findall(filename)[1])
-    #print ("img_num : "+img_num)
-    #print ("img_sub_num : "+ str(img_sub_num))
-    
     # Decode the RGB JPEG.
     if (FLAGS.import_image_format == "png"):
         image = coder.decode_png(image_data)
@@ -117,15 +117,6 @@ def _process_image_files_batch(coder, thread_index, ranges, name, filenames,
                                num_shards_per_batch + 1).astype(int)
 
     num_files_in_thread = ranges[thread_index][1] - ranges[thread_index][0]
-    
-# =============================================================================
-#     regex = re.compile(r'\d+')
-#     img_num  = int(regex.findall(filenames)[0])
-#     img_sub_num =  int(regex.findall(filenames)[1])
-#     index = str(img_num,img_sub_num)
-#     filenames.index(index)
-# =============================================================================
-    
     counter = 0
     for s in range(num_shards_per_batch):
         # Generate a sharded version of the file name, e.g. 'train-00002-of-00010'
@@ -230,15 +221,3 @@ def _process_dataset(name, directory, num_shards):
     filenames = _find_image_files(directory)
     #print(filenames)
     _process_image_files(name, filenames, num_shards)
-
-
-# =============================================================================
-# def main(unused_argv):
-#     _process_dataset("LF", FLAGS.directory, FLAGS.num_shards)
-# =============================================================================
-
-
-# =============================================================================
-# if __name__ == '__main__':
-#     tf.app.run()
-# =============================================================================
